@@ -5,10 +5,10 @@ import Sidebar from './sidebar';
 
 const AppLayout = (/*{ children }*/) => {
   return (
-    <div className='min-h-screen flex flex-col bg-amber-300'>
+    <div className='min-h-screen flex flex-col bg-bg-primary'>
       <Header />
 
-      <div className='flex flex-1'>
+      <div className='flex flex-1 gap-10'>
         <Sidebar />
         <Main />
         {/*<Main>{children}</Main>*/}

@@ -1,1 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Exo 2', sans-serif;
+
+  /* COLOR PALETTE */
+
+  /*  Forest Productivity - Light Mode*/
+  /* Vibe: Grounded, natural, focus-oriented */
+
+  --color-bg-primary: #edf1e7; /* Soft moss */
+  --color-bg-secondary: #f7faf4; /* Pale sage */
+  --color-text-primary: #1f2b1a; /* Forest black */
+  --color-text-secondary: #5c6b54; /* Olive grey */
+  --color-accent: #cc7755; /* Clay orange */
+  --color-success: #6b9b7c; /* Deep sage */
+  --color-warning: #d9a84a; /* Mustard */
+
+  /*  Forest Productivity - Dark Mode*/
+  /*
+--color-bg-primary: #1A1F18 /* Deep forest
+  --color-bg-secondary: #242B21 /* Dark olive
+  --color-text-primary: #EDF1E7 /* Soft cream
+  --color-text-secondary: #9BA896 /* Sage grey
+  --color-accent: #E08A6E /* Burnt sienna
+  --color-success: #88BF9A /* Bright sage
+  --color-warning: #EEC170 /* Golden yellow
+*/
+}
