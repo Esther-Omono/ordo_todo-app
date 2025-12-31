@@ -1,10 +1,9 @@
-import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-const Main = (/*{ children }*/) => {
+const Main = () => {
   return (
-    <main className='flex-1'>
-      {/*{children}*/}
-      <h1>Main</h1>
+    <main className='flex-1 bg-white m-7 flex'>
+      <Outlet />
     </main>
   );
 };
