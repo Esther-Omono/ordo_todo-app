@@ -13,61 +13,69 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <div className='font-sans bg-bg-secondary m-7 p-5 w-2/7 rounded-lg flex flex-col gap-2'>
-      <div className='flex gap-2 bg-bg-primary rounded-md p-3 shadow-md mb-3 cursor-pointer transition-all duration-200 hover:bg-accent hover:text-bg-primary hover:shadow-lg hover:scale-[1.02]'>
+    <div className='font-sans px-5 pt-5 w-1/5 flex flex-col gap-2 border-r border-r-text-muted'>
+      <div className='flex gap-2 rounded-md px-3 py-2 shadow-md cursor-pointer transition-all duration-200 text-bg-primary bg-accent hover:bg-active hover:text-accent hover:scale-[1.02] font-bold'>
         <Plus />
         <p>Add Task</p>
       </div>
 
-      <Link
-        to='/'
-        className='flex gap-2 bg-bg-primary rounded-md p-3 shadow-md mb-3 cursor-pointer transition-all duration-200 hover:bg-accent hover:text-bg-primary hover:shadow-lg hover:scale-[1.02]'
-      >
-        <Inbox />
-        <p>Inbox</p>
-      </Link>
+      <hr className='my-2 border-t border-text-muted w-full mx-auto' />
 
-      <Link
-        to='/today'
-        className='flex gap-2 rounded-md bg-bg-primary p-3 shadow-md mb-3 cursor-pointer transition-all duration-200 hover:bg-accent hover:text-bg-primary hover:shadow-lg hover:scale-[1.02]'
-      >
-        <Calendar1 />
-        <p>Today</p>
-      </Link>
+      <div>
+        <Link
+          to='/'
+          className='flex gap-2 rounded-md px-3 py-2 cursor-pointer transition-all duration-200 text-text-secondary hover:bg-active hover:text-accent hover:shadow-lg hover:scale-[1.02]'
+        >
+          <Inbox />
+          <p>Inbox</p>
+        </Link>
 
-      <Link
-        to='/upcoming'
-        className='flex gap-2 rounded-md bg-bg-primary p-3 shadow-md mb-3 cursor-pointer transition-all duration-200 hover:bg-accent hover:text-bg-primary hover:shadow-lg hover:scale-[1.02]'
-      >
-        <CalendarArrowUp />
-        <p>Upcoming</p>
-      </Link>
+        <Link
+          to='/today'
+          className='flex gap-2 rounded-md px-3 py-2 cursor-pointer transition-all duration-200 text-text-secondary hover:bg-active hover:text-accent hover:shadow-lg hover:scale-[1.02]'
+        >
+          <Calendar1 />
+          <p>Today</p>
+        </Link>
 
-      <Link
-        to='/filter'
-        className='flex gap-2 rounded-md bg-bg-primary p-3 shadow-md mb-3 cursor-pointer transition-all duration-200 hover:bg-accent hover:text-bg-primary hover:shadow-lg hover:scale-[1.02]'
-      >
-        <SlidersHorizontal />
-        <p>Filter</p>
-      </Link>
+        <Link
+          to='/upcoming'
+          className='flex gap-2 rounded-md px-3 py-2 cursor-pointer transition-all duration-200 text-text-secondary hover:bg-active hover:text-accent hover:shadow-lg hover:scale-[1.02]'
+        >
+          <CalendarArrowUp />
+          <p>Upcoming</p>
+        </Link>
 
-      <Dropdown icon={<FolderKanban />} label='Projects'>
-        <div className='ml-4 mb-4 text-sm'>
-          <p className='pb-4 flex gap-2'>
-            <ChartNoAxesGantt size={20} /> Personal
-          </p>
-          <p className='pb-4 flex gap-2'>
-            <ChartNoAxesGantt size={20} /> Work
-          </p>
-          <p className='pb-4 flex gap-2'>
-            <ChartNoAxesGantt size={20} /> Appointments
-          </p>
+        <Link
+          to='/filter'
+          className='flex gap-2 rounded-md px-3 py-2 cursor-pointer transition-all duration-200 text-text-secondary hover:bg-active hover:text-accent hover:shadow-lg hover:scale-[1.02]'
+        >
+          <SlidersHorizontal />
+          <p>Filter</p>
+        </Link>
+      </div>
+
+      <hr className='my-2 border-t border-text-muted w-full mx-auto' />
+
+      <div>
+        <p className='pl-3 pb-2 text-text-muted font-bold'>PROJECTS</p>
+        <div>
+          <div className='flex gap-2 rounded-md px-3 py-2 cursor-pointer text-text-secondary hover:bg-active hover:text-accent'>
+            <FolderKanban size={20} />
+            <p>Personal</p>
+          </div>
+
+          <div className='flex gap-2 rounded-md px-3 py-2 cursor-pointer text-text-secondary hover:bg-active hover:text-accent'>
+            <FolderKanban size={20} className='text-text-secondary' />
+            <p>Work</p>
+          </div>
+
+          <div className='flex gap-2 rounded-md px-3 py-2 cursor-pointer text-text-secondary hover:bg-active hover:text-accent'>
+            <FolderKanban size={20} className='text-text-secondary' />
+            <p>Appointments</p>
+          </div>
         </div>
-        <button className='bg-accent w-fit p-3 text-sm rounded-lg font-semibold text-bg-primary flex gap-2 cursor-pointer border-2 border-transparent hover:bg-bg-secondary hover:border-accent hover:text-accent'>
-          <PlusCircle size={20} />
-          Add Project
-        </button>
-      </Dropdown>
+      </div>
     </div>
   );
 };

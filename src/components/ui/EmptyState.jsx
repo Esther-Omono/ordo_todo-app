@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { Plus, SquareCheckBig } from 'lucide-react';
 
 const EmptyState = ({
   title,
@@ -8,13 +8,14 @@ const EmptyState = ({
 }) => {
   return (
     <div className='flex flex-col items-center justify-center text-center gap-4'>
-      <div className='text-3xl font-semibold'>{title}</div>
+      <SquareCheckBig size={30} className='text-text-secondary' />
+      <div className='text-3xl text-text-primary font-semibold'>{title}</div>
 
-      <p className='text-text-muted max-w-md italic'>{description}</p>
+      <p className='text-text-secondary max-w-md'>{description}</p>
 
       <button
         onClick={onAction}
-        className='mt-4 flex items-center gap-2 bg-accent text-bg-primary px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-bg-secondary hover:text-accent border-2 border-transparent hover:border-accent'
+        className='mt-4 flex items-center gap-2 px-6 py-3 rounded-lg font-bold cursor-pointer transition-all duration-200 bg-accent text-bg-primary hover:bg-active hover:text-accent hover:scale-[1.02]'
       >
         <Plus size={18} />
         {actionLabel}

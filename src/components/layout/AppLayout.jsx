@@ -8,7 +8,7 @@ const AppLayout = () => {
     <div className='min-h-screen flex flex-col bg-bg-primary'>
       <Header />
 
-      <div className='flex flex-1 gap-2'>
+      <div className='flex flex-1'>
         <Sidebar />
         <Main />
       </div>

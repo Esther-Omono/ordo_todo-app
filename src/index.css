@@ -11,22 +11,53 @@
   /*  Forest Productivity - Light Mode*/
   /* Vibe: Grounded, natural, focus-oriented */
 
-  --color-bg-primary: #edf1e7; /* Soft moss */
+  --color-bg-primary: #0d1117; /* Changed */
+  --color-bg-secondary: #f7faf4;
+  --color-text-primary: #e6edf3; /* Changed */
+  --color-text-secondary: #8b949e; /* Changed */
+  --color-text-muted: #484f58; /* Changed */
+  --color-accent: #00d9a3; /* Changed */
+  --color-active: #0d2818; /* Changed */
+  --color-success: #6b9b7c;
+  --color-warning: #d9a84a;
+}
+
+/*
+/* globals.css — map to CSS vars for easy dark mode switching */ /*
+:root {
+  --bg-page:      #F5F9F8;
+  --bg-surface:   #FFFFFF;
+  --bg-elevated:  #EEF7F4;
+  --border:       #D0E8E2;
+  --text-primary: #1A2E2A;
+  --text-secondary: #5A7A74;
+  --text-muted:   #A8C5BC;
+  --accent:       #00956F;
+  --accent-hover: #007A5C;
+  --active-bg:    #E0F7F1;
+  --active-text:  #00734F;
+}*/
+
+.dark {
+  --bg-page: #0d1117;
+  --bg-surface: #161b22;
+  --bg-elevated: #1c2128;
+  --border: #21262d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #484f58;
+  --accent: #00d9a3;
+  --accent-hover: #00f5bc;
+  --active-bg: #0d2818;
+  --active-text: #00d9a3;
+}
+
+.green {
+  --color-bg-primary: #0d1117; /* Soft moss */
   --color-bg-secondary: #f7faf4; /* Pale sage */
   --color-text-primary: #1f2b1a; /* Forest black */
   --color-text-secondary: #5c6b54; /* Olive grey */
   --color-accent: #cc7755; /* Clay orange */
   --color-success: #6b9b7c; /* Deep sage */
-  --color-warning: #d9a84a; /* Mustard */
-
-  /*  Forest Productivity - Dark Mode*/
-  /*
---color-bg-primary: #1A1F18 /* Deep forest
-  --color-bg-secondary: #242B21 /* Dark olive
-  --color-text-primary: #EDF1E7 /* Soft cream
-  --color-text-secondary: #9BA896 /* Sage grey
-  --color-accent: #E08A6E /* Burnt sienna
-  --color-success: #88BF9A /* Bright sage
-  --color-warning: #EEC170 /* Golden yellow
-*/
+  --color-warning: #d9a84a;
 }
