@@ -10,14 +10,18 @@ import {
 } from 'lucide-react';
 import Dropdown from '../ui/Dropdown';
 import { Link } from 'react-router-dom';
+import AddTaskModal from '../ui/AddTaskModal';
 
-const Sidebar = () => {
+const Sidebar = ({ onAddTaskClick }) => {
   return (
     <div className='font-sans px-5 pt-5 w-1/5 flex flex-col gap-2 border-r border-r-text-muted'>
-      <div className='flex gap-2 rounded-md px-3 py-2 shadow-md cursor-pointer transition-all duration-200 text-bg-primary bg-accent hover:bg-active hover:text-accent hover:scale-[1.02] font-bold'>
+      <button
+        className='flex gap-2 rounded-md px-3 py-2 shadow-md cursor-pointer transition-all duration-200 text-bg-primary bg-accent hover:bg-active hover:text-accent hover:scale-[1.02] font-bold'
+        onClick={onAddTaskClick}
+      >
         <Plus />
-        <p>Add Task</p>
-      </div>
+        <span>Add Task</span>
+      </button>
 
       <hr className='my-2 border-t border-text-muted w-full mx-auto' />
 
