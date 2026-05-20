@@ -18,6 +18,8 @@
   --color-text-muted: #484f58; /* Changed */
   --color-accent: #00d9a3; /* Changed */
   --color-active: #0d2818; /* Changed */
+  --color-modalBg: #161b22; /* Changed */
+  --color-border: #30363d; /* Changed */
   --color-success: #6b9b7c;
   --color-warning: #d9a84a;
 }
@@ -36,6 +38,13 @@
   --accent-hover: #007A5C;
   --active-bg:    #E0F7F1;
   --active-text:  #00734F;
+
+    const surf = c ? "#161B22" : "#fff";
+  const border = c ? "#30363D" : "#D0E8E2";
+  const txt = c ? "#E6EDF3" : "#1A2E2A";
+  const muted = c ? "#8B949E" : "#7AA098";
+  const inputBg = c ? "#0D1117" : "#F5F9F8";
+  const accent = c ? "#00D9A3" : "#00956F";
 }*/
 
 .dark {
