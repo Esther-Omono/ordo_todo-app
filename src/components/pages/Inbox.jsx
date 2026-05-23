@@ -24,8 +24,10 @@ const Inbox = () => {
   }*/
 
   return (
-    <div className='mx-auto w-[80%]'>
-      <TaskList />
+    <div className='w-full overflow-y-auto'>
+      <div className='mx-auto w-[80%]'>
+        <TaskList />
+      </div>
     </div>
   );
 };

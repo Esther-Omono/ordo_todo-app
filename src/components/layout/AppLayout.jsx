@@ -13,10 +13,10 @@ const AppLayout = () => {
   };
 
   return (
-    <div className='min-h-screen flex flex-col bg-bg-primary'>
+    <div className='h-screen flex flex-col bg-bg-primary'>
       <Header />
 
-      <div className='flex flex-1'>
+      <div className='flex flex-1 overflow-hidden'>
         <Sidebar onAddTaskClick={openModal} />
         <Main />
       </div>

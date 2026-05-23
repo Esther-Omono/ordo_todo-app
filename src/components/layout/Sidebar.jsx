@@ -14,7 +14,7 @@ import AddTaskModal from '../ui/AddTaskModal';
 
 const Sidebar = ({ onAddTaskClick }) => {
   return (
-    <div className='font-sans px-5 pt-5 w-1/5 flex flex-col gap-2 border-r border-r-text-muted'>
+    <div className='font-sans px-5 pt-5 w-1/5 flex flex-col gap-2 border-r border-r-text-muted overflow-y-auto'>
       <button
         className='flex gap-2 rounded-md px-3 py-2 shadow-md cursor-pointer transition-all duration-200 text-bg-primary bg-accent hover:bg-active hover:text-accent hover:scale-[1.02] font-bold'
         onClick={onAddTaskClick}
