@@ -1,8 +1,10 @@
+import { useOutletContext } from 'react-router-dom';
 import { TaskList } from '../features/TaskList';
 import EmptyState from '../ui/EmptyState';
 import Logo from '../ui/Logo';
 
 const Inbox = () => {
+  const { onViewTaskCard } = useOutletContext();
   // const hasTasks = false; // later this will come from state
 
   /*if (!hasTasks) {
@@ -26,7 +28,7 @@ const Inbox = () => {
   return (
     <div className='w-full overflow-y-auto'>
       <div className='mx-auto w-[80%]'>
-        <TaskList />
+        <TaskList onViewTaskCard={onViewTaskCard} />
       </div>
     </div>
   );

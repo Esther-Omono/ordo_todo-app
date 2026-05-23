@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Calendar1, Check, SquareCheck } from 'lucide-react';
 
-export const TaskCard = () => {
+export const TaskCard = ({ onViewTaskCard }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   return (
     <div
+      onClick={onViewTaskCard}
       className='bg-bg-secondary border border-border rounded-xl overflow-hidden cursor-pointer transition-all relative'
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-1px)';

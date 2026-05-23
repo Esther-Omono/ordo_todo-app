@@ -1,15 +1,21 @@
 import { useState } from 'react';
-import AddTaskModal from '../ui/AddTaskModal';
 import Footer from './footer';
 import Header from './header';
 import Main from './main';
 import Sidebar from './sidebar';
+import AddTaskModal from '../ui/AddTaskModal';
+import TaskCardModal from '../ui/TaskCardModal';
 
 const AppLayout = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
+  const [isTaskCardModalOpen, setIsTaskCardModalOpen] = useState(false);
 
   const openModal = () => {
-    setModalOpen(true);
+    setIsAddTaskModalOpen(true);
+  };
+
+  const openTaskCardModal = () => {
+    setIsTaskCardModalOpen(true);
   };
 
   return (
@@ -18,12 +24,20 @@ const AppLayout = () => {
 
       <div className='flex flex-1 overflow-hidden'>
         <Sidebar onAddTaskClick={openModal} />
-        <Main />
+        <Main onViewTaskCard={openTaskCardModal} />
       </div>
 
       <Footer />
 
-      <AddTaskModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <AddTaskModal
+        isOpen={isAddTaskModalOpen}
+        onClose={() => setIsAddTaskModalOpen(false)}
+      />
+
+      <TaskCardModal
+        isOpen={isTaskCardModalOpen}
+        onClose={() => setIsTaskCardModalOpen(false)}
+      />
     </div>
   );
 };

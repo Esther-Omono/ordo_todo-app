@@ -1,7 +1,7 @@
 import React from 'react';
 import { TaskCard } from './TaskCard';
 
-export const TaskList = () => {
+export const TaskList = ({ onViewTaskCard }) => {
   return (
     <div className='p-3 flex flex-col gap-2'>
       <div className='shrink-0 flex items-center justify-between mb-0.5'>
@@ -11,12 +11,12 @@ export const TaskList = () => {
         <span className='text-xs text-text-secondary'>3 tasks</span>
       </div>
 
-      <TaskCard />
-      <TaskCard />
-      <TaskCard />
-      <TaskCard />
-      <TaskCard />
-      <TaskCard />
+      <TaskCard onViewTaskCard={onViewTaskCard} />
+      <TaskCard onViewTaskCard={onViewTaskCard} />
+      <TaskCard onViewTaskCard={onViewTaskCard} />
+      <TaskCard onViewTaskCard={onViewTaskCard} />
+      <TaskCard onViewTaskCard={onViewTaskCard} />
+      <TaskCard onViewTaskCard={onViewTaskCard} />
       <TaskCard />
       <TaskCard />
       <TaskCard />

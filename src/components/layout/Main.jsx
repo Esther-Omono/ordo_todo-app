@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
 
-const Main = () => {
+const Main = ({ onViewTaskCard }) => {
   return (
     <main className='flex-1 flex overflow-hidden'>
-      <Outlet />
+      <Outlet context={{ onViewTaskCard }} />
     </main>
   );
 };

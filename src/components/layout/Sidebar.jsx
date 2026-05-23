@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 import Dropdown from '../ui/Dropdown';
 import { Link } from 'react-router-dom';
-import AddTaskModal from '../ui/AddTaskModal';
 
 const Sidebar = ({ onAddTaskClick }) => {
   return (
