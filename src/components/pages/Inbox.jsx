@@ -1,10 +1,11 @@
+import { TaskList } from '../features/TaskList';
 import EmptyState from '../ui/EmptyState';
 import Logo from '../ui/Logo';
 
 const Inbox = () => {
-  const hasTasks = false; // later this will come from state
+  // const hasTasks = false; // later this will come from state
 
-  if (!hasTasks) {
+  /*if (!hasTasks) {
     return (
       <div className='w-full flex items-center justify-center'>
         <EmptyState
@@ -20,9 +21,13 @@ const Inbox = () => {
         />
       </div>
     );
-  }
+  }*/
 
-  return <div>Inbox</div>;
+  return (
+    <div className='mx-auto w-[80%]'>
+      <TaskList />
+    </div>
+  );
 };
 
 export default Inbox;

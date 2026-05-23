@@ -15,8 +15,8 @@ export default function AddTaskModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className='absolute inset-0 flex items-center justify-center z-20 p-4 rgba(0, 0, 0, 0.65) bg-opacity-50 backdrop-blur-xs'>
-      <div className='w-1/2 max-w-95 bg-modalBg rounded-xl border border-border flex flex-col overflow-hidden max-h-[calc(100vh-48px)]'>
+    <div className='fixed inset-0 flex items-start justify-center z-50 px-auto pt-15 overflow-y-auto bg-black/65 backdrop-blur-xs'>
+      <div className='w-full max-w-3/5 bg-modalBg rounded-xl border border-border flex flex-col overflow-hidden max-h-[calc(100vh-7rem)]'>
         {/* Header */}
         <div className='py-3 px-3.5 border-b border-border flex items-center justify-between shrink-0'>
           <span className='font-medium text-text-primary'>New Task</span>

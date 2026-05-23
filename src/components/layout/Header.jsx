@@ -3,16 +3,16 @@ import Logo from '../ui/Logo';
 
 const Header = () => {
   return (
-    <div className='sticky top-0 h-20 py-4 px-10 flex items-center justify-between border-b border-b-text-muted'>
+    <div className='sticky top-0 h-20 z-50 py-4 px-10 flex items-center bg-bg-primary justify-between border-b border-b-text-muted'>
       <Logo />
       <div className='flex gap-3'>
-        <div className='p-2 bg-text-muted rounded-lg cursor-pointer transition-all duration-200 hover:bg-active hover:text-accent'>
+        <div className='p-2 bg-modalBg rounded-lg text-text-primary cursor-pointer transition-all duration-200 hover:bg-active hover:text-accent'>
           <Search size={20} />
         </div>
-        <div className='p-2 bg-text-muted rounded-lg cursor-pointer transition-all duration-200 hover:bg-active hover:text-accent'>
+        <div className='p-2 bg-modalBg rounded-lg text-text-primary cursor-pointer transition-all duration-200 hover:bg-active hover:text-accent'>
           <Bell size={20} />
         </div>
-        <div className='p-2 bg-text-muted rounded-lg cursor-pointer transition-all duration-200 hover:bg-active hover:text-accent'>
+        <div className='p-2 bg-modalBg rounded-lg text-text-primary cursor-pointer transition-all duration-200 hover:bg-active hover:text-accent'>
           <User size={20} />
         </div>
       </div>
