@@ -1,10 +1,61 @@
 import { Calendar, Plus, X } from 'lucide-react';
 import { useState } from 'react';
+import Checkbox from './Checkbox';
+import Tagpill from './Tagpill';
+
+/* Constants */
+const PRIORITY_LEVELS = ['Low', 'Medium', 'High'];
+
+const PRIORITY_STYLES = {
+  Low: 'hover:bg-accent/20 hover:border-accent hover:text-accent data-[selected=true]:bg-accent/20 data-[selected=true]:border-accent data-[selected=true]:text-accent',
+  Medium:
+    'hover:bg-warning/20 hover:border-warning hover:text-warning  data-[selected=true]:bg-warning/20  data-[selected=true]:border-warning  data-[selected=true]:text-warning',
+  High: 'hover:bg-urgent/20 hover:border-urgent hover:text-urgent data-[selected=true]:bg-urgent/20 data-[selected=true]:border-urgent data-[selected=true]:text-urgent',
+};
+
+const AVAILABLE_TAGS = ['urgent', 'waiting', 'review', 'client', 'internal'];
+
+const TagDropdownItem = ({ label, onMouseDown, isLast }) => (
+  <div
+    onMouseDown={() => onMouseDown(label)}
+    className={`py-2 px-3 text-xs cursor-pointer hover:bg-bg-primary ${!isLast ? 'border-b border-border' : ''}`}
+  >
+    {label}
+  </div>
+);
+
+const PriorityButton = ({ label, isSelected, onClick }) => (
+  <button
+    onClick={() => onClick(label)}
+    data-selected={isSelected}
+    className={`flex-1 py-1.5 rounded-md text-xs font-medium cursor-pointer border transition-colors bg-bg-primary border-border text-text-primary ${PRIORITY_STYLES[label]}`}
+  >
+    {label}
+  </button>
+);
+
+const FormField = ({ label, htmlFor, children }) => (
+  <div className='flex flex-col gap-0.5 mb-1.5'>
+    <label
+      htmlFor={htmlFor}
+      className='text-[9px] font-medium uppercase text-text-secondary mb-1'
+    >
+      {label}
+    </label>
+    {children}
+  </div>
+);
+
+const inputClass =
+  'w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent';
+
+/* Main Component */
 
 export default function AddTaskModal({ isOpen, onClose }) {
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [tagOpen, setTagOpen] = useState(false);
+  const [priority, setPriority] = useState(null);
 
   if (!isOpen) return null;
 
@@ -12,6 +63,15 @@ export default function AddTaskModal({ isOpen, onClose }) {
     if (!tags.includes(t)) setTags((p) => [...p, t]);
     setTagOpen(false);
     setTagInput('');
+  };
+
+  const removeTag = (t) => setTags((prev) => prev.filter((tag) => tag !== t));
+
+  const handleTagKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (tagInput.trim()) addTag(tagInput.trim());
+    }
   };
 
   return (
@@ -36,76 +96,47 @@ export default function AddTaskModal({ isOpen, onClose }) {
           </div>
 
           {/* Title */}
-          <div className='flex flex-col gap-0.5 mb-1.5'>
-            <label
-              htmlFor='title'
-              className='text-[9px] font-medium uppercase text-text-secondary mb-1'
-            >
-              Title
-            </label>
+          <FormField label='Title' htmlFor='title'>
             <input
               id='title'
               type='text'
               placeholder='e.g. "Design new homepage"'
-              className='w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent'
+              className={inputClass}
             />
-          </div>
+          </FormField>
 
           {/* Notes */}
-          <div className='flex flex-col gap-0.5 mb-1.5'>
-            <label
-              htmlFor='notes'
-              className='text-[9px] font-medium uppercase text-text-secondary mb-1'
-            >
-              Notes
-            </label>
+          <FormField label='Notes' htmlFor='notes'>
             <textarea
               id='notes'
               placeholder='Add any additional details here...'
-              className='w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent resize-none'
+              className={`${inputClass} resize-none`}
             />
-          </div>
+          </FormField>
 
           {/* Due + Project row */}
           <div className='grid grid-cols-2 gap-2'>
-            <div className='flex flex-col gap-0.5 mb-1.5'>
-              <label
-                htmlFor='dueDate'
-                className='text-[9px] font-medium uppercase text-text-secondary mb-1'
-              >
-                Due Date
-              </label>
-
+            <FormField label='Due Date' htmlFor='dueDate'>
               <div className='relative w-full'>
                 <input
                   id='dueDate'
                   type='date'
-                  className='w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer'
+                  className={`${inputClass} [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
                 />
-
                 <div className='absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white'>
                   <Calendar className='w-4 h-4' />
                 </div>
               </div>
-            </div>
+            </FormField>
 
-            <div className='flex flex-col gap-0.5 mb-1.5'>
-              <label
-                htmlFor='project'
-                className='text-[9px] font-medium uppercase text-text-secondary mb-1'
-              >
-                Project
-              </label>
-              <select
-                id='project'
-                className='w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent cursor-pointer'
-              >
+            <FormField label='Project' htmlFor='project'>
+              <select id='project' className={`${inputClass} cursor-pointer`}>
                 <option value=''>Select a project</option>
                 <option value='work'>Work</option>
                 <option value='personal'>Personal</option>
                 <option value='shopping'>Shopping</option>
               </select>
-            </div>
+            </FormField>
           </div>
 
           {/* Priority */}
@@ -115,40 +146,32 @@ export default function AddTaskModal({ isOpen, onClose }) {
             </p>
 
             <div className='flex gap-1.5'>
-              <button className='flex-1 py-1.5 rounded-md text-xs font-medium cursor-pointer bg-bg-primary border border-border text-text-primary transition-colors'>
-                Low
-              </button>
-              <button className='flex-1 py-1.5 rounded-md text-xs font-medium cursor-pointer bg-bg-primary border border-border text-text-primary transition-colors'>
-                Medium
-              </button>
-              <button className='flex-1 py-1.5 rounded-md text-xs font-medium cursor-pointer bg-bg-primary border border-border text-text-primary transition-colors'>
-                High
-              </button>
+              {PRIORITY_LEVELS.map((level) => (
+                <PriorityButton
+                  key={level}
+                  label={level}
+                  isSelected={priority === level}
+                  onClick={setPriority}
+                />
+              ))}
             </div>
           </div>
 
           {/* Subtasks */}
-          <div className='flex flex-col gap-0.5 mb-1.5'>
-            <label
-              htmlFor='subtasks'
-              className='text-[9px] font-medium uppercase text-text-secondary mb-1'
-            >
-              Subtasks
-            </label>
-
+          <FormField label='Subtasks' htmlFor='subtasks'>
             <div className='flex gap-1.5'>
               <input
                 id='subtasks'
                 type='text'
                 placeholder='e.g. "Create wireframes"'
-                className='w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent flex-1'
+                className={`${inputClass} flex-1`}
               />
               <button className='py-2 px-2.5 rounded-md border border-border bg-bg-primary text-accent text-xs cursor-pointer font-medium shrink-0 flex items-center gap-1 hover:bg-accent transition-colors hover:text-bg-primary'>
                 <Plus className='w-3.5 h-3.5' />
                 Add
               </button>
             </div>
-          </div>
+          </FormField>
 
           {/* Tags */}
           <div className='relative'>
@@ -158,23 +181,14 @@ export default function AddTaskModal({ isOpen, onClose }) {
             >
               Tags
             </label>
-            <div className='flex flex-wrap gap-1 mb-1.5'>
-              <span className='inline-flex items-center gap-1 py-0.5 px-2 rounded-2xl text-xs font-medium bg-active/80 text-accent border border-accent/30'>
-                urgent <button className='cursor-pointer text-xs'>X</button>
-              </span>
-              <span className='inline-flex items-center gap-1 py-0.5 px-2 rounded-2xl text-xs font-medium bg-active/80 text-accent border border-accent/30'>
-                waiting <button className='cursor-pointer text-xs'>X</button>
-              </span>
-              <span className='inline-flex items-center gap-1 py-0.5 px-2 rounded-2xl text-xs font-medium bg-active/80 text-accent border border-accent/30'>
-                review <button className='cursor-pointer text-xs'>X</button>
-              </span>
-              <span className='inline-flex items-center gap-1 py-0.5 px-2 rounded-2xl text-xs font-medium bg-active/80 text-accent border border-accent/30'>
-                client <button className='cursor-pointer text-xs'>X</button>
-              </span>
-              <span className='inline-flex items-center gap-1 py-0.5 px-2 rounded-2xl text-xs font-medium bg-active/80 text-accent border border-accent/30'>
-                internal <button className='cursor-pointer text-xs'>X</button>
-              </span>
-            </div>
+
+            {tags.length > 0 && (
+              <div className='flex flex-wrap gap-1 mb-1.5'>
+                {tags.map((tag) => (
+                  <Tagpill key={tag} label={tag} onRemove={removeTag} />
+                ))}
+              </div>
+            )}
 
             <div className='flex gap-1.5'>
               <input
@@ -182,80 +196,24 @@ export default function AddTaskModal({ isOpen, onClose }) {
                 type='text'
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                  }
-                  if (tagInput.trim()) addTag(tagInput.trim());
-                }}
+                onKeyDown={handleTagKeyDown}
                 placeholder='e.g. "UI/UX"'
-                className='w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent flex-1'
+                className={`${inputClass} flex-1`}
                 onFocus={() => setTagOpen(true)}
                 onBlur={() => setTimeout(() => setTagOpen(false), 150)}
               />
             </div>
+
             {tagOpen && (
               <div className='absolute bottom-[calc(100%-26px)] left-0 right-0 z-10 bg-modalBg border border-border rounded-md overflow-hidden text-text-primary'>
-                <div
-                  onMouseDown={() => addTag('urgent')}
-                  className='py-2 px-3 text-xs cursor-pointer border-b border-border'
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = '#0d1117')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = 'transparent')
-                  }
-                >
-                  urgent
-                </div>
-                <div
-                  onMouseDown={() => addTag('waiting')}
-                  className='py-2 px-3 text-xs cursor-pointer border-b border-border'
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = '#0d1117')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = 'transparent')
-                  }
-                >
-                  waiting
-                </div>
-                <div
-                  onMouseDown={() => addTag('review')}
-                  className='py-2 px-3 text-xs cursor-pointer border-b border-border'
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = '#0d1117')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = 'transparent')
-                  }
-                >
-                  review
-                </div>
-                <div
-                  onMouseDown={() => addTag('client')}
-                  className='py-2 px-3 text-xs cursor-pointer border-b border-border'
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = '#0d1117')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = 'transparent')
-                  }
-                >
-                  client
-                </div>
-                <div
-                  onMouseDown={() => addTag('internal')}
-                  className='py-2 px-3 text-xs cursor-pointer border-b border-border'
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = '#0d1117')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = 'transparent')
-                  }
-                >
-                  internal
-                </div>
+                {AVAILABLE_TAGS.map((tag, i) => (
+                  <TagDropdownItem
+                    key={tag}
+                    label={tag}
+                    onMouseDown={addTag}
+                    isLast={i === AVAILABLE_TAGS.length - 1}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -265,9 +223,10 @@ export default function AddTaskModal({ isOpen, onClose }) {
             <p className='font-bold mb-1 uppercase'>Preview</p>
             <p className='flex flex-col gap-1 text-text-primary'>Task Title</p>
             <div className='flex gap-2 mt-1 text-[10px] flex-wrap'>
-              <span>priority</span>
               <span className='text-text-secondary'>date</span>
-              <span className='text-text-secondary'>tag</span>
+              <span className='text-text-secondary'>
+                {tags.length > 0 ? tags.join(', ') : 'tag'}
+              </span>
               <span className='text-text-secondary'>2 subtasks</span>
             </div>
           </div>

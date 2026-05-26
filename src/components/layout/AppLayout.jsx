@@ -24,7 +24,7 @@ const AppLayout = () => {
 
       <div className='flex flex-1 overflow-hidden'>
         <Sidebar onAddTaskClick={openModal} />
-        <Main onViewTaskCard={openTaskCardModal} />
+        <Main onAddTaskClick={openModal} onViewTaskCard={openTaskCardModal} />
       </div>
 
       <Footer />
