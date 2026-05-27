@@ -36,8 +36,8 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
     notes = 'Task Notes',
     priority = 'High',
     dueDate = 'Due Date',
-    subtasks = { completed: 2, total: 3 },
-    tags = ['Tags'],
+    subtasks = [],
+    tags = [],
   } = task;
 
   return (
@@ -67,11 +67,11 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
             {title}
           </span>
 
-          <MetaBadge variant='accent'>{project}</MetaBadge>
+          {project && <MetaBadge variant='accent'>{project}</MetaBadge>}
         </div>
 
         {/* Notes preview */}
-        <p className='text-xs text-text-secondary mb-2 ml-7 line-clamp-2 overflow-hidden italic'>
+        <p className='text-xs text-text-secondary mb-2 ml-7 line-clamp-2 text-ellipsis italic'>
           {notes}
         </p>
 
@@ -83,12 +83,14 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
           </MetaBadge>
 
           {/* Due Date */}
-          <MetaBadge icon={Calendar1}>{dueDate}</MetaBadge>
+          {dueDate && <MetaBadge icon={Calendar1}>{dueDate}</MetaBadge>}
 
           {/* Subtask Progress */}
-          <MetaBadge icon={SquareCheck}>
-            {subtasks.completed} / {subtasks.total} subtasks
-          </MetaBadge>
+          {subtasks.length > 0 && (
+            <MetaBadge icon={SquareCheck}>
+              0 / {subtasks.length} subtasks
+            </MetaBadge>
+          )}
 
           {/* Tags */}
           {tags.map((tag) => (

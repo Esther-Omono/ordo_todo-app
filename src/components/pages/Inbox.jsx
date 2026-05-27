@@ -4,11 +4,9 @@ import EmptyState from '../ui/EmptyState';
 import Logo from '../ui/Logo';
 
 const Inbox = () => {
-  const { /*onAddTaskClick,*/ onViewTaskCard } = useOutletContext();
-  {
-    /*const hasTasks = false; // later this will come from state
+  const { tasks, onAddTaskClick, onViewTaskCard } = useOutletContext();
 
-  if (!hasTasks) {
+  if (!tasks.length) {
     return (
       <div className='w-full flex items-center justify-center'>
         <EmptyState
@@ -20,17 +18,16 @@ const Inbox = () => {
           }
           description='Organize your tasks, stay focused, and take control of your day.'
           actionLabel='Add your first task'
-          onAction={() => onAddTaskClick()}
+          onAction={onAddTaskClick}
         />
       </div>
     );
-  }*/
   }
 
   return (
     <div className='w-full overflow-y-auto'>
       <div className='mx-auto w-[80%]'>
-        <TaskList onViewTaskCard={onViewTaskCard} />
+        <TaskList tasks={tasks} onViewTaskCard={onViewTaskCard} />
       </div>
     </div>
   );

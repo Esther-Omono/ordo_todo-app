@@ -51,16 +51,53 @@ const inputClass =
 
 /* Main Component */
 
-export default function AddTaskModal({ isOpen, onClose }) {
-  const [tags, setTags] = useState([]);
+export default function AddTaskModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  taskToEdit = null,
+}) {
+  const isEditing = taskToEdit !== null;
+
+  const [title, setTitle] = useState(taskToEdit?.title ?? '');
+  const [notes, setNotes] = useState(taskToEdit?.notes ?? '');
+  const [dueDate, setDueDate] = useState(taskToEdit?.dueDate ?? '');
+  const [project, setProject] = useState(taskToEdit?.project ?? '');
+  const [priority, setPriority] = useState(taskToEdit?.priority ?? null);
+  const [subtaskInput, setSubtaskInput] = useState('');
+  const [subtasks, setSubtasks] = useState(taskToEdit?.subtasks ?? []);
+  const [tags, setTags] = useState(taskToEdit?.tags ?? []);
   const [tagInput, setTagInput] = useState('');
   const [tagOpen, setTagOpen] = useState(false);
-  const [priority, setPriority] = useState(null);
 
-  if (!isOpen) return null;
+  const handleClose = () => {
+    onClose();
+  };
+
+  const handleSubmit = () => {
+    if (!title.trim()) return;
+    onSubmit({
+      ...(isEditing ? { id: taskToEdit.id } : {}),
+      title: title.trim(),
+      notes,
+      dueDate,
+      project,
+      priority,
+      subtasks,
+      tags,
+    });
+    handleClose();
+  };
+
+  const addSubtask = () => {
+    if (subtaskInput.trim()) {
+      setSubtasks((prev) => [...prev, subtaskInput.trim()]);
+      setSubtaskInput('');
+    }
+  };
 
   const addTag = (t) => {
-    if (!tags.includes(t)) setTags((p) => [...p, t]);
+    if (!tags.includes(t)) setTags((prev) => [...prev, t]);
     setTagOpen(false);
     setTagInput('');
   };
@@ -73,6 +110,8 @@ export default function AddTaskModal({ isOpen, onClose }) {
       if (tagInput.trim()) addTag(tagInput.trim());
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className='fixed inset-0 flex items-start justify-center z-50 px-auto pt-15 overflow-y-auto bg-black/65 backdrop-blur-xs'>
@@ -100,6 +139,8 @@ export default function AddTaskModal({ isOpen, onClose }) {
             <input
               id='title'
               type='text'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               placeholder='e.g. "Design new homepage"'
               className={inputClass}
             />
@@ -109,6 +150,8 @@ export default function AddTaskModal({ isOpen, onClose }) {
           <FormField label='Notes' htmlFor='notes'>
             <textarea
               id='notes'
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
               placeholder='Add any additional details here...'
               className={`${inputClass} resize-none`}
             />
@@ -121,6 +164,8 @@ export default function AddTaskModal({ isOpen, onClose }) {
                 <input
                   id='dueDate'
                   type='date'
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
                   className={`${inputClass} [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
                 />
                 <div className='absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white'>
@@ -130,7 +175,12 @@ export default function AddTaskModal({ isOpen, onClose }) {
             </FormField>
 
             <FormField label='Project' htmlFor='project'>
-              <select id='project' className={`${inputClass} cursor-pointer`}>
+              <select
+                id='project'
+                value={project}
+                onChange={(e) => setProject(e.target.value)}
+                className={`${inputClass} cursor-pointer`}
+              >
                 <option value=''>Select a project</option>
                 <option value='work'>Work</option>
                 <option value='personal'>Personal</option>
@@ -159,14 +209,42 @@ export default function AddTaskModal({ isOpen, onClose }) {
 
           {/* Subtasks */}
           <FormField label='Subtasks' htmlFor='subtasks'>
+            {subtasks.length > 0 && (
+              <ul className='mb-1.5 flex flex-col gap-1'>
+                {subtasks.map((s, i) => (
+                  <li
+                    key={i}
+                    className='flex items-center justify-between py-1 px-2.5 rounded-md border border-border bg-bg-primary text-xs text-text-primary'
+                  >
+                    {s}
+                    <button
+                      onClick={() =>
+                        setSubtasks((prev) =>
+                          prev.filter((_, idx) => idx !== i),
+                        )
+                      }
+                      className='text-text-secondary hover:text-urgent cursor-pointer'
+                    >
+                      <X className='w-3 h-3' />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
             <div className='flex gap-1.5'>
               <input
                 id='subtasks'
                 type='text'
+                value={subtaskInput}
+                onChange={(e) => setSubtaskInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addSubtask()}
                 placeholder='e.g. "Create wireframes"'
                 className={`${inputClass} flex-1`}
               />
-              <button className='py-2 px-2.5 rounded-md border border-border bg-bg-primary text-accent text-xs cursor-pointer font-medium shrink-0 flex items-center gap-1 hover:bg-accent transition-colors hover:text-bg-primary'>
+              <button
+                onClick={addSubtask}
+                className='py-2 px-2.5 rounded-md border border-border bg-bg-primary text-accent text-xs cursor-pointer font-medium shrink-0 flex items-center gap-1 hover:bg-accent transition-colors hover:text-bg-primary'
+              >
                 <Plus className='w-3.5 h-3.5' />
                 Add
               </button>
@@ -221,24 +299,37 @@ export default function AddTaskModal({ isOpen, onClose }) {
           {/* Preview */}
           <div className='py-2 px-2.5 rounded-lg bg-active/80 border border-accent text-[10px] text-accent'>
             <p className='font-bold mb-1 uppercase'>Preview</p>
-            <p className='flex flex-col gap-1 text-text-primary'>Task Title</p>
+            <p className='flex flex-col gap-1 text-text-primary'>
+              {title || 'Task Title'}
+            </p>
             <div className='flex gap-2 mt-1 text-[10px] flex-wrap'>
-              <span className='text-text-secondary'>date</span>
+              <span>{priority ?? 'priority'}</span>
+              <span className='text-text-secondary'>{dueDate || 'date'}</span>
               <span className='text-text-secondary'>
-                {tags.length > 0 ? tags.join(', ') : 'tag'}
+                {tags.length > 0 ? tags.join(', ') : 'tags'}
               </span>
-              <span className='text-text-secondary'>2 subtasks</span>
+              {subtasks.length > 0 && (
+                <span className='text-text-secondary'>
+                  {subtasks.length} subtasks
+                </span>
+              )}
             </div>
           </div>
         </div>
 
         {/* Footer */}
         <div className='py-2.5 px-3.5 border-t border-border flex justify-end gap-2 shrink-0'>
-          <button className='py-1.5 px-3.5 rounded-md text-xs font-medium bg-transparent border border-border text-text-secondary cursor-pointer'>
+          <button
+            onClick={handleClose}
+            className='py-1.5 px-3.5 rounded-md text-xs font-medium bg-transparent border border-border text-text-secondary cursor-pointer'
+          >
             Cancel
           </button>
-          <button className='py-1.5 px-3.5 rounded-md text-xs font-medium bg-accent text-bg-primary cursor-pointer'>
-            Add Task
+          <button
+            onClick={handleSubmit}
+            className='py-1.5 px-3.5 rounded-md text-xs font-medium bg-accent text-bg-primary cursor-pointer'
+          >
+            {isEditing ? 'Save Changes' : 'Add Task'}
           </button>
         </div>
       </div>
