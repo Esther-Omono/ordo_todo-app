@@ -9,13 +9,7 @@ import {
 import { useState } from 'react';
 import Checkbox from './Checkbox';
 import Tagpill from './Tagpill';
-
-/* Constants */
-const PRIORITY_STRIPE_COLORS = {
-  low: 'bg-accent',
-  medium: 'bg-warning',
-  high: 'bg-urgent',
-};
+import PriorityStripe from './PriorityStripe';
 
 /* Sub components */
 // eslint-disable-next-line no-unused-vars
@@ -66,7 +60,7 @@ export default function TaskCardModal({ isOpen, onClose, task = {} }) {
     title = 'Task Title',
     project = 'Design',
     due = 'Today',
-    priority = 'high',
+    priority = 'Low',
     created = '2 hours ago',
     notes = 'Task Notes',
     tags = ['Client', 'Review'],
@@ -74,8 +68,6 @@ export default function TaskCardModal({ isOpen, onClose, task = {} }) {
     completedSubtasks = 2,
   } = task;
 
-  const stripeColor =
-    PRIORITY_STRIPE_COLORS[priority.toLowerCase()] ?? 'bg-warning';
   const progressPercent = subtasks.length
     ? Math.round((completedSubtasks / subtasks.length) * 100)
     : 0;
@@ -115,7 +107,7 @@ export default function TaskCardModal({ isOpen, onClose, task = {} }) {
     <div className='fixed inset-0 flex items-start justify-center z-50 px-auto pt-15 overflow-y-auto bg-black/65 backdrop-blur-xs'>
       <div className='w-full max-w-3/5 bg-modalBg rounded-xl border border-border flex flex-col overflow-hidden max-h-[calc(100vh-7rem)]'>
         {/* Left Priority Stripe */}
-        <div className={`h-1 ${stripeColor} rounded-t-[14px] shrink-0`} />
+        <PriorityStripe priority={priority} orientation='horizontal' />
 
         {/* Header */}
         <div className='py-3 px-3.5 border-b border-border shrink-0 flex items-center justify-between'>

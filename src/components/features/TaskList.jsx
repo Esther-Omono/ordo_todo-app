@@ -17,10 +17,6 @@ export const TaskList = ({ onViewTaskCard }) => {
       <TaskCard onViewTaskCard={onViewTaskCard} />
       <TaskCard onViewTaskCard={onViewTaskCard} />
       <TaskCard onViewTaskCard={onViewTaskCard} />
-      <TaskCard />
-      <TaskCard />
-      <TaskCard />
-      <TaskCard />
     </div>
   );
 };
