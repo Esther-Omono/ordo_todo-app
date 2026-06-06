@@ -31,6 +31,19 @@ const AppLayout = () => {
     setIsAddTaskModalOpen(true);
   };
 
+  const handleUpdateSubtasks = (taskId, checkedIndices) => {
+    const completedCount = Array.isArray(checkedIndices)
+      ? checkedIndices.length
+      : 0;
+    updateTask(taskId, {
+      completedSubtasks: completedCount,
+      checkedSubtaskIndices: checkedIndices,
+    });
+  };
+
+  // derive live task instead of using stale selectedTask snapshot
+  const liveSelectedTask = tasks.find((t) => t.id === selectedTask?.id) ?? {};
+
   const handleSubmitTask = (taskData) => {
     if (taskData.id) {
       updateTask(taskData.id, taskData);
@@ -68,7 +81,6 @@ const AppLayout = () => {
       <Footer />
 
       <AddTaskModal
-        key={taskToEdit?.id ?? 'new'}
         isOpen={isAddTaskModalOpen}
         onClose={handleCloseAddModal}
         onSubmit={handleSubmitTask}
@@ -76,12 +88,15 @@ const AppLayout = () => {
       />
 
       <TaskCardModal
+        key={selectedTask?.id} // Force remount when a different task is selected
         isOpen={isTaskCardModalOpen}
         onClose={() => setIsTaskCardModalOpen(false)}
         onDelete={handleDeleteTask}
         onEdit={handleEditTask}
-        task={selectedTask ?? {}}
-        key={selectedTask?.id ?? 'view'}
+        onUpdateSubtasks={(count) =>
+          handleUpdateSubtasks(selectedTask?.id, count)
+        }
+        task={liveSelectedTask}
       />
     </div>
   );

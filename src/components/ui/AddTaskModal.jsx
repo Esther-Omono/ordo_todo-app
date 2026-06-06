@@ -1,5 +1,5 @@
 import { Calendar, Plus, X } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Checkbox from './Checkbox';
 import Tagpill from './Tagpill';
 
@@ -49,7 +49,20 @@ const FormField = ({ label, htmlFor, children }) => (
 const inputClass =
   'w-full py-2 px-2.5 rounded-md border border-border bg-bg-primary text-text-primary text-xs outline-none transition-colors focus:border-accent';
 
-/* Main Component */
+const getInitialState = (task) => ({
+  title: task?.title ?? '',
+  notes: task?.notes ?? '',
+  dueDate: task?.dueDate ?? '',
+  project: task?.project ?? '',
+  priority: task?.priority ?? null,
+  subtasks: (task?.subtasks ?? []).map((s) =>
+    typeof s === 'string' ? { id: crypto.randomUUID(), text: s } : s,
+  ),
+  tags: task?.tags ?? [],
+  subtaskInput: '',
+  tagInput: '',
+  tagOpen: false,
+});
 
 export default function AddTaskModal({
   isOpen,
@@ -58,56 +71,59 @@ export default function AddTaskModal({
   taskToEdit = null,
 }) {
   const isEditing = taskToEdit !== null;
+  const [form, setForm] = useState(() => getInitialState(taskToEdit));
 
-  const [title, setTitle] = useState(taskToEdit?.title ?? '');
-  const [notes, setNotes] = useState(taskToEdit?.notes ?? '');
-  const [dueDate, setDueDate] = useState(taskToEdit?.dueDate ?? '');
-  const [project, setProject] = useState(taskToEdit?.project ?? '');
-  const [priority, setPriority] = useState(taskToEdit?.priority ?? null);
-  const [subtaskInput, setSubtaskInput] = useState('');
-  const [subtasks, setSubtasks] = useState(taskToEdit?.subtasks ?? []);
-  const [tags, setTags] = useState(taskToEdit?.tags ?? []);
-  const [tagInput, setTagInput] = useState('');
-  const [tagOpen, setTagOpen] = useState(false);
+  // Reset form when taskToEdit identity changes (new task vs edit)
+  const prevTaskId = useRef(taskToEdit?.id ?? null);
+  if (prevTaskId.current !== (taskToEdit?.id ?? null)) {
+    prevTaskId.current = taskToEdit?.id ?? null;
+    setForm(getInitialState(taskToEdit));
+  }
+
+  const set = (field) => (val) =>
+    setForm((prev) => ({ ...prev, [field]: val }));
 
   const handleClose = () => {
     onClose();
   };
 
   const handleSubmit = () => {
-    if (!title.trim()) return;
+    if (!form.title.trim()) return;
     onSubmit({
       ...(isEditing ? { id: taskToEdit.id } : {}),
-      title: title.trim(),
-      notes,
-      dueDate,
-      project,
-      priority,
-      subtasks,
-      tags,
+      title: form.title.trim(),
+      notes: form.notes,
+      dueDate: form.dueDate,
+      project: form.project,
+      priority: form.priority,
+      subtasks: form.subtasks.map((s) => s.text),
+      tags: form.tags,
     });
-    handleClose();
+    onClose();
   };
 
   const addSubtask = () => {
-    if (subtaskInput.trim()) {
-      setSubtasks((prev) => [...prev, subtaskInput.trim()]);
-      setSubtaskInput('');
+    if (form.subtaskInput.trim()) {
+      set('subtasks')([
+        ...form.subtasks,
+        { id: crypto.randomUUID(), text: form.subtaskInput.trim() },
+      ]);
+      set('subtaskInput')('');
     }
   };
 
   const addTag = (t) => {
-    if (!tags.includes(t)) setTags((prev) => [...prev, t]);
-    setTagOpen(false);
-    setTagInput('');
+    if (!form.tags.includes(t)) set('tags')([...form.tags, t]);
+    set('tagOpen')(false);
+    set('tagInput')('');
   };
 
-  const removeTag = (t) => setTags((prev) => prev.filter((tag) => tag !== t));
+  const removeTag = (t) => set('tags')(form.tags.filter((tag) => tag !== t));
 
   const handleTagKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (tagInput.trim()) addTag(tagInput.trim());
+      if (form.tagInput.trim()) addTag(form.tagInput.trim());
     }
   };
 
@@ -139,8 +155,8 @@ export default function AddTaskModal({
             <input
               id='title'
               type='text'
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={form.title}
+              onChange={(e) => set('title')(e.target.value)}
               placeholder='e.g. "Design new homepage"'
               className={inputClass}
             />
@@ -150,8 +166,8 @@ export default function AddTaskModal({
           <FormField label='Notes' htmlFor='notes'>
             <textarea
               id='notes'
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              value={form.notes}
+              onChange={(e) => set('notes')(e.target.value)}
               placeholder='Add any additional details here...'
               className={`${inputClass} resize-none`}
             />
@@ -164,8 +180,8 @@ export default function AddTaskModal({
                 <input
                   id='dueDate'
                   type='date'
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
+                  value={form.dueDate}
+                  onChange={(e) => set('dueDate')(e.target.value)}
                   className={`${inputClass} [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer`}
                 />
                 <div className='absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white'>
@@ -177,8 +193,8 @@ export default function AddTaskModal({
             <FormField label='Project' htmlFor='project'>
               <select
                 id='project'
-                value={project}
-                onChange={(e) => setProject(e.target.value)}
+                value={form.project}
+                onChange={(e) => set('project')(e.target.value)}
                 className={`${inputClass} cursor-pointer`}
               >
                 <option value=''>Select a project</option>
@@ -200,8 +216,8 @@ export default function AddTaskModal({
                 <PriorityButton
                   key={level}
                   label={level}
-                  isSelected={priority === level}
-                  onClick={setPriority}
+                  isSelected={form.priority === level}
+                  onClick={() => set('priority')(level)}
                 />
               ))}
             </div>
@@ -209,18 +225,18 @@ export default function AddTaskModal({
 
           {/* Subtasks */}
           <FormField label='Subtasks' htmlFor='subtasks'>
-            {subtasks.length > 0 && (
+            {form.subtasks.length > 0 && (
               <ul className='mb-1.5 flex flex-col gap-1'>
-                {subtasks.map((s, i) => (
+                {form.subtasks.map((s) => (
                   <li
-                    key={i}
+                    key={s.id}
                     className='flex items-center justify-between py-1 px-2.5 rounded-md border border-border bg-bg-primary text-xs text-text-primary'
                   >
-                    {s}
+                    {s.text}
                     <button
                       onClick={() =>
-                        setSubtasks((prev) =>
-                          prev.filter((_, idx) => idx !== i),
+                        set('subtasks')(
+                          form.subtasks.filter((sub) => sub.id !== s.id),
                         )
                       }
                       className='text-text-secondary hover:text-urgent cursor-pointer'
@@ -235,8 +251,8 @@ export default function AddTaskModal({
               <input
                 id='subtasks'
                 type='text'
-                value={subtaskInput}
-                onChange={(e) => setSubtaskInput(e.target.value)}
+                value={form.subtaskInput}
+                onChange={(e) => set('subtaskInput')(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addSubtask()}
                 placeholder='e.g. "Create wireframes"'
                 className={`${inputClass} flex-1`}
@@ -260,9 +276,9 @@ export default function AddTaskModal({
               Tags
             </label>
 
-            {tags.length > 0 && (
+            {form.tags.length > 0 && (
               <div className='flex flex-wrap gap-1 mb-1.5'>
-                {tags.map((tag) => (
+                {form.tags.map((tag) => (
                   <Tagpill key={tag} label={tag} onRemove={removeTag} />
                 ))}
               </div>
@@ -272,17 +288,17 @@ export default function AddTaskModal({
               <input
                 id='tags'
                 type='text'
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
+                value={form.tagInput}
+                onChange={(e) => set('tagInput')(e.target.value)}
                 onKeyDown={handleTagKeyDown}
                 placeholder='e.g. "UI/UX"'
                 className={`${inputClass} flex-1`}
-                onFocus={() => setTagOpen(true)}
-                onBlur={() => setTimeout(() => setTagOpen(false), 150)}
+                onFocus={() => set('tagOpen')(true)}
+                onBlur={() => setTimeout(() => set('tagOpen')(false), 150)}
               />
             </div>
 
-            {tagOpen && (
+            {form.tagOpen && (
               <div className='absolute bottom-[calc(100%-26px)] left-0 right-0 z-10 bg-modalBg border border-border rounded-md overflow-hidden text-text-primary'>
                 {AVAILABLE_TAGS.map((tag, i) => (
                   <TagDropdownItem
@@ -300,17 +316,19 @@ export default function AddTaskModal({
           <div className='py-2 px-2.5 rounded-lg bg-active/80 border border-accent text-[10px] text-accent'>
             <p className='font-bold mb-1 uppercase'>Preview</p>
             <p className='flex flex-col gap-1 text-text-primary'>
-              {title || 'Task Title'}
+              {form.title || 'Task Title'}
             </p>
             <div className='flex gap-2 mt-1 text-[10px] flex-wrap'>
-              <span>{priority ?? 'priority'}</span>
-              <span className='text-text-secondary'>{dueDate || 'date'}</span>
+              <span>{form.prioritypriority ?? 'priority'}</span>
               <span className='text-text-secondary'>
-                {tags.length > 0 ? tags.join(', ') : 'tags'}
+                {form.dueDate || 'date'}
               </span>
-              {subtasks.length > 0 && (
+              <span className='text-text-secondary'>
+                {form.tags.length > 0 ? form.tags.join(', ') : 'tags'}
+              </span>
+              {form.subtasks.length > 0 && (
                 <span className='text-text-secondary'>
-                  {subtasks.length} subtasks
+                  {form.subtasks.length} subtasks
                 </span>
               )}
             </div>

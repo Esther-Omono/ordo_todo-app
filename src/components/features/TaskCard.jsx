@@ -88,7 +88,9 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
           {/* Subtask Progress */}
           {subtasks.length > 0 && (
             <MetaBadge icon={SquareCheck}>
-              0 / {subtasks.length} subtasks
+              {Array.isArray(task.checkedSubtaskIndices)
+                ? task.checkedSubtaskIndices.length
+                : task.completedSubtasks ?? 0} / {subtasks.length} subtasks
             </MetaBadge>
           )}
 

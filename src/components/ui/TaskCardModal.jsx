@@ -48,8 +48,16 @@ export default function TaskCardModal({
   onClose,
   onDelete,
   onEdit,
+  onUpdateSubtasks,
   task = {},
 }) {
+  // Helper to get indices from task
+  const getCheckedIndices = () => {
+    if (Array.isArray(task.checkedSubtaskIndices)) {
+      return task.checkedSubtaskIndices;
+    }
+    return [];
+  };
   const [isChecked, setIsChecked] = useState(false);
 
   const {
@@ -63,9 +71,15 @@ export default function TaskCardModal({
     subtasks = [],
   } = task;
 
-  const [checkedSubtasks, setCheckedSubtasks] = useState(
-    Array.isArray(subtasks) ? new Array(subtasks.length).fill(false) : [],
-  );
+  const [checkedSubtasks, setCheckedSubtasks] = useState(() => {
+    if (!Array.isArray(subtasks)) return [];
+    const arr = new Array(subtasks.length).fill(false);
+    const indices = getCheckedIndices();
+    indices.forEach((idx) => {
+      if (idx >= 0 && idx < arr.length) arr[idx] = true;
+    });
+    return arr;
+  });
 
   const effectiveCheckedSubtasks = Array.isArray(subtasks)
     ? subtasks.map((_, idx) => checkedSubtasks[idx] ?? false)
@@ -79,13 +93,24 @@ export default function TaskCardModal({
     ? Math.round((completedCount / subtasks.length) * 100)
     : 0;
 
-  const toggleSubtask = (i) =>
+  const toggleSubtask = (i) => {
     setCheckedSubtasks((prev) => {
       const next = [...prev];
       while (next.length <= i) next.push(false);
       next[i] = !next[i];
       return next;
     });
+
+    // Compute the new indices separately, outside the updater
+    const next = [...checkedSubtasks];
+    while (next.length <= i) next.push(false);
+    next[i] = !next[i];
+    const indices = next
+      .map((checked, idx) => (checked ? idx : -1))
+      .filter((idx) => idx !== -1);
+
+    if (onUpdateSubtasks) onUpdateSubtasks(indices);
+  };
 
   const metaFields = [
     {
