@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Calendar1, SquareCheck } from 'lucide-react';
 import Checkbox from '../ui/Checkbox';
 import Tagpill from '../ui/Tagpill';
@@ -27,9 +26,7 @@ const MetaBadge = ({ icon: Icon, children, variant = 'default', priority }) => {
   );
 };
 
-export const TaskCard = ({ onViewTaskCard, task = {} }) => {
-  const [isChecked, setIsChecked] = useState(false);
-
+export const TaskCard = ({ onViewTaskCard, onToggleComplete, task = {} }) => {
   const {
     title = 'Task Title',
     project,
@@ -38,6 +35,7 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
     dueDate,
     subtasks = [],
     tags = [],
+    completed = false,
   } = task;
 
   const hasProject = !!project;
@@ -61,16 +59,16 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
         <div className='flex items-center justify-center gap-2 mb-1.5'>
           <div onClick={(e) => e.stopPropagation()}>
             <Checkbox
-              checked={isChecked}
+              checked={completed}
               onChange={(e) => {
                 e.stopPropagation();
-                setIsChecked(e.target.checked);
+                onToggleComplete(e.target.checked);
               }}
             />
           </div>
 
           <span
-            className={`text-lg font-medium flex-1 text-text-primary font-serif leading-none self-center transition-all duration-200 ${isChecked ? 'line-through text-text-secondary' : ''}`}
+            className={`text-lg font-medium flex-1 text-text-primary font-serif leading-none self-center transition-all duration-200 ${completed ? 'line-through text-text-secondary' : ''}`}
           >
             {title}
           </span>

@@ -41,6 +41,10 @@ const AppLayout = () => {
     });
   };
 
+  const handleToggleComplete = (taskId, completed) => {
+    updateTask(taskId, { completed });
+  };
+
   // derive live task instead of using stale selectedTask snapshot
   const liveSelectedTask = tasks.find((t) => t.id === selectedTask?.id) ?? {};
 
@@ -75,6 +79,7 @@ const AppLayout = () => {
           tasks={tasks}
           onAddTaskClick={openAddModal}
           onViewTaskCard={openViewModal}
+          onToggleComplete={handleToggleComplete}
         />
       </div>
 
@@ -95,6 +100,9 @@ const AppLayout = () => {
         onEdit={handleEditTask}
         onUpdateSubtasks={(count) =>
           handleUpdateSubtasks(selectedTask?.id, count)
+        }
+        onToggleComplete={(completed) =>
+          handleToggleComplete(selectedTask?.id, completed)
         }
         task={liveSelectedTask}
       />

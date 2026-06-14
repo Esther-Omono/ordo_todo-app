@@ -48,6 +48,7 @@ export const useTasks = () => {
       completedSubtasks: 0,
       checkedSubtaskIndices: [],
       tags: taskData.tags ?? [],
+      completed: false,
       ...taskData,
     };
     setAndPersist((prev) => [newTask, ...prev]);

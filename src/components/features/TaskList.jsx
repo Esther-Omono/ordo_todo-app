@@ -1,7 +1,7 @@
 import React from 'react';
 import { TaskCard } from './TaskCard';
 
-export const TaskList = ({ tasks, onViewTaskCard }) => {
+export const TaskList = ({ tasks, onViewTaskCard, onToggleComplete }) => {
   return (
     <div className='p-3 flex flex-col gap-2'>
       <div className='shrink-0 flex items-center justify-between mb-0.5'>
@@ -18,6 +18,7 @@ export const TaskList = ({ tasks, onViewTaskCard }) => {
           key={task.id}
           task={task}
           onViewTaskCard={() => onViewTaskCard(task)}
+          onToggleComplete={(checked) => onToggleComplete(task.id, checked)}
         />
       ))}
     </div>

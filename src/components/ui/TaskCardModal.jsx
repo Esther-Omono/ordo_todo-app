@@ -49,6 +49,7 @@ export default function TaskCardModal({
   onDelete,
   onEdit,
   onUpdateSubtasks,
+  onToggleComplete,
   task = {},
 }) {
   // Helper to get indices from task
@@ -58,7 +59,6 @@ export default function TaskCardModal({
     }
     return [];
   };
-  const [isChecked, setIsChecked] = useState(false);
 
   const {
     title = 'Task Title',
@@ -69,6 +69,7 @@ export default function TaskCardModal({
     notes,
     tags = [],
     subtasks = [],
+    completed = false,
   } = task;
 
   const hasPriority = !!priority;
@@ -173,11 +174,11 @@ export default function TaskCardModal({
         <div className='py-3 px-3.5 border-b border-border shrink-0 flex items-center justify-between'>
           <div className='flex items-center gap-2.5'>
             <Checkbox
-              checked={isChecked}
-              onChange={(e) => setIsChecked(e.target.checked)}
+              checked={completed}
+              onChange={(e) => onToggleComplete?.(e.target.checked)}
             />
             <span
-              className={`text-xl font-medium text-text-primary font-serif transition-all duration-200 ${isChecked ? 'line-through text-text-secondary' : ''}`}
+              className={`text-xl font-medium text-text-primary font-serif transition-all duration-200 ${completed ? 'line-through text-text-secondary' : ''}`}
             >
               {title}
             </span>

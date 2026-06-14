@@ -4,7 +4,8 @@ import EmptyState from '../ui/EmptyState';
 import Logo from '../ui/Logo';
 
 const Inbox = () => {
-  const { tasks, onAddTaskClick, onViewTaskCard } = useOutletContext();
+  const { tasks, onAddTaskClick, onViewTaskCard, onToggleComplete } =
+    useOutletContext();
 
   if (!tasks.length) {
     return (
@@ -27,7 +28,11 @@ const Inbox = () => {
   return (
     <div className='w-full overflow-y-auto'>
       <div className='mx-auto w-[80%]'>
-        <TaskList tasks={tasks} onViewTaskCard={onViewTaskCard} />
+        <TaskList
+          tasks={tasks}
+          onViewTaskCard={onViewTaskCard}
+          onToggleComplete={onToggleComplete}
+        />
       </div>
     </div>
   );
