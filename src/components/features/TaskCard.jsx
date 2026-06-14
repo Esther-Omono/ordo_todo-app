@@ -32,21 +32,29 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
 
   const {
     title = 'Task Title',
-    project = 'Task Project',
-    notes = 'Task Notes',
-    priority = 'High',
-    dueDate = 'Due Date',
+    project,
+    notes,
+    priority,
+    dueDate,
     subtasks = [],
     tags = [],
   } = task;
+
+  const hasProject = !!project;
+  const hasNotes = !!notes;
+  const hasPriority = !!priority;
+  const hasDueDate = !!dueDate;
+  const hasSubtasks = subtasks.length > 0;
+  const hasTags = tags.length > 0;
+  const hasBottomRow = hasPriority || hasDueDate || hasSubtasks || hasTags;
 
   return (
     <div
       onClick={onViewTaskCard}
       className='bg-bg-secondary border border-border rounded-xl overflow-hidden cursor-pointer transition-all relative hover:-translate-y-px'
     >
-      {/* Left Priority Stripe */}
-      <PriorityStripe priority={priority} />
+      {/* Left Priority Stripe - only when priority is set */}
+      {hasPriority && <PriorityStripe priority={priority} />}
 
       <div className='py-3 px-5'>
         {/* Top Row: Title and Project Badge */}
@@ -67,38 +75,43 @@ export const TaskCard = ({ onViewTaskCard, task = {} }) => {
             {title}
           </span>
 
-          {project && <MetaBadge variant='accent'>{project}</MetaBadge>}
+          {hasProject && <MetaBadge variant='accent'>{project}</MetaBadge>}
         </div>
 
         {/* Notes preview */}
-        <p className='text-xs text-text-secondary mb-2 ml-7 line-clamp-2 text-ellipsis italic'>
-          {notes}
-        </p>
+        {hasNotes && (
+          <p className='text-xs text-text-secondary mb-2 ml-7 line-clamp-2 text-ellipsis italic'>
+            {notes}
+          </p>
+        )}
 
         {/* Bottom Row: Priority, Due Date, Subtask Progress, Tag, Expand Button */}
-        <div className='flex items-center gap-1.5 flex-wrap pl-6'>
-          {/* Priority */}
-          <MetaBadge variant='priority' priority={priority}>
-            {priority}
-          </MetaBadge>
+        {hasBottomRow && (
+          <div className='flex items-center gap-1.5 flex-wrap pl-6'>
+            {/* Priority */}
+            {hasPriority && (
+              <MetaBadge variant='priority' priority={priority}>
+                {priority}
+              </MetaBadge>
+            )}
 
-          {/* Due Date */}
-          {dueDate && <MetaBadge icon={Calendar1}>{dueDate}</MetaBadge>}
+            {/* Due Date */}
+            {hasDueDate && <MetaBadge icon={Calendar1}>{dueDate}</MetaBadge>}
 
-          {/* Subtask Progress */}
-          {subtasks.length > 0 && (
-            <MetaBadge icon={SquareCheck}>
-              {Array.isArray(task.checkedSubtaskIndices)
-                ? task.checkedSubtaskIndices.length
-                : task.completedSubtasks ?? 0} / {subtasks.length} subtasks
-            </MetaBadge>
-          )}
+            {/* Subtask Progress */}
+            {hasSubtasks && (
+              <MetaBadge icon={SquareCheck}>
+                {Array.isArray(task.checkedSubtaskIndices)
+                  ? task.checkedSubtaskIndices.length
+                  : (task.completedSubtasks ?? 0)}{' '}
+                / {subtasks.length} subtasks
+              </MetaBadge>
+            )}
 
-          {/* Tags */}
-          {tags.map((tag) => (
-            <Tagpill key={tag} label={tag} />
-          ))}
-        </div>
+            {/* Tags */}
+            {hasTags && tags.map((tag) => <Tagpill key={tag} label={tag} />)}
+          </div>
+        )}
       </div>
     </div>
   );

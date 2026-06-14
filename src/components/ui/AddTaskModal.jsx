@@ -13,7 +13,7 @@ const PRIORITY_STYLES = {
   High: 'hover:bg-urgent/20 hover:border-urgent hover:text-urgent data-[selected=true]:bg-urgent/20 data-[selected=true]:border-urgent data-[selected=true]:text-urgent',
 };
 
-const AVAILABLE_TAGS = ['urgent', 'waiting', 'review', 'client', 'internal'];
+const AVAILABLE_TAGS = ['Urgent', 'Waiting', 'Review', 'Client', 'Internal'];
 
 const TagDropdownItem = ({ label, onMouseDown, isLast }) => (
   <div
@@ -73,11 +73,14 @@ export default function AddTaskModal({
   const isEditing = taskToEdit !== null;
   const [form, setForm] = useState(() => getInitialState(taskToEdit));
 
+  const [titleError, setTitleError] = useState(false);
+
   // Reset form when taskToEdit identity changes (new task vs edit)
   const prevTaskId = useRef(taskToEdit?.id ?? null);
   if (prevTaskId.current !== (taskToEdit?.id ?? null)) {
     prevTaskId.current = taskToEdit?.id ?? null;
     setForm(getInitialState(taskToEdit));
+    setTitleError(false);
   }
 
   const set = (field) => (val) =>
@@ -88,7 +91,11 @@ export default function AddTaskModal({
   };
 
   const handleSubmit = () => {
-    if (!form.title.trim()) return;
+    if (!form.title.trim()) {
+      setTitleError(true);
+      return;
+    }
+    setTitleError(false);
     onSubmit({
       ...(isEditing ? { id: taskToEdit.id } : {}),
       title: form.title.trim(),
@@ -134,7 +141,9 @@ export default function AddTaskModal({
       <div className='w-full max-w-3/5 bg-modalBg rounded-xl border border-border flex flex-col overflow-hidden max-h-[calc(100vh-7rem)]'>
         {/* Header */}
         <div className='py-3 px-3.5 border-b border-border flex items-center justify-between shrink-0'>
-          <span className='font-medium text-text-primary'>New Task</span>
+          <span className='font-medium text-text-primary'>
+            {isEditing ? 'Edit Task' : 'New Task'}
+          </span>
           <button
             onClick={onClose}
             className='cursor-pointer text-text-secondary'
@@ -156,10 +165,19 @@ export default function AddTaskModal({
               id='title'
               type='text'
               value={form.title}
-              onChange={(e) => set('title')(e.target.value)}
+              onChange={(e) => {
+                set('title')(e.target.value);
+                if (e.target.value.trim()) setTitleError(false);
+              }}
               placeholder='e.g. "Design new homepage"'
-              className={inputClass}
+              className={`${inputClass} ${titleError ? 'border-urgent focus:border-urgent' : ''}`}
             />
+
+            {titleError && (
+              <span className='text-[10px] text-urgent mt-0.5'>
+                Task title is required.
+              </span>
+            )}
           </FormField>
 
           {/* Notes */}

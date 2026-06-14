@@ -62,14 +62,16 @@ export default function TaskCardModal({
 
   const {
     title = 'Task Title',
-    project = 'Design',
-    dueDate = 'Today',
-    priority = 'Low',
-    createdAt = '2 hours ago',
-    notes = 'Task Notes',
+    project,
+    dueDate,
+    priority,
+    createdAt = '-',
+    notes,
     tags = [],
     subtasks = [],
   } = task;
+
+  const hasPriority = !!priority;
 
   const [checkedSubtasks, setCheckedSubtasks] = useState(() => {
     if (!Array.isArray(subtasks)) return [];
@@ -116,21 +118,27 @@ export default function TaskCardModal({
     {
       Icon: FolderKanban,
       label: 'Project',
-      value: project,
+      value: project || (
+        <span className='text-text-secondary italic'>Not set</span>
+      ),
       borderRight: true,
       borderBottom: true,
     },
     {
       Icon: Calendar1,
       label: 'Due',
-      value: dueDate,
+      value: dueDate || (
+        <span className='text-text-secondary italic'>Not set</span>
+      ),
       borderRight: false,
       borderBottom: true,
     },
     {
       Icon: Flag,
       label: 'Priority',
-      value: priority,
+      value: priority || (
+        <span className='text-text-secondary italic'>Not set</span>
+      ),
       borderRight: true,
       borderBottom: false,
     },
@@ -157,7 +165,9 @@ export default function TaskCardModal({
     <div className='fixed inset-0 flex items-start justify-center z-50 px-auto pt-15 overflow-y-auto bg-black/65 backdrop-blur-xs'>
       <div className='w-full max-w-3/5 bg-modalBg rounded-xl border border-border flex flex-col overflow-hidden max-h-[calc(100vh-7rem)]'>
         {/* Left Priority Stripe */}
-        <PriorityStripe priority={priority} orientation='horizontal' />
+        {hasPriority && (
+          <PriorityStripe priority={priority} orientation='horizontal' />
+        )}
 
         {/* Header */}
         <div className='py-3 px-3.5 border-b border-border shrink-0 flex items-center justify-between'>
@@ -203,7 +213,7 @@ export default function TaskCardModal({
           <div className='py-3 px-3.5'>
             <SectionLabel>Notes</SectionLabel>
             <p className='text-xs leading-[1.65] text-text-primary py-2.5 px-3  bg-bg-primary rounded-lg border border-border font-serif wrap-break-word whitespace-pre-wrap'>
-              {notes}
+              {notes || 'No notes yet...'}
             </p>
           </div>
 

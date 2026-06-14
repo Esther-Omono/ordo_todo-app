@@ -1,6 +1,7 @@
 import {
   Calendar1,
   CalendarArrowUp,
+  CalendarCheck2,
   ChartNoAxesGantt,
   FolderKanban,
   Inbox,
@@ -47,6 +48,14 @@ const Sidebar = ({ onAddTaskClick }) => {
         >
           <CalendarArrowUp />
           <p>Upcoming</p>
+        </Link>
+
+        <Link
+          to='/completed'
+          className='flex gap-2 rounded-md px-3 py-2 cursor-pointer transition-all duration-200 text-text-secondary hover:bg-active hover:text-accent hover:shadow-lg hover:scale-[1.02]'
+        >
+          <CalendarCheck2 />
+          <p>Completed</p>
         </Link>
 
         <Link

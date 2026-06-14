@@ -4,6 +4,7 @@ import Inbox from './components/pages/Inbox';
 import Today from './components/pages/Today';
 import Upcoming from './components/pages/Upcoming';
 import Filter from './components/pages/Filter';
+import Completed from './components/pages/Completed';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path='today' element={<Today />} />
           <Route path='upcoming' element={<Upcoming />} />
           <Route path='filter' element={<Filter />} />
+          <Route path='completed' element={<Completed />} />
         </Route>
       </Routes>
     </BrowserRouter>
