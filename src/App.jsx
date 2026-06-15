@@ -5,6 +5,7 @@ import Today from './components/pages/Today';
 import Upcoming from './components/pages/Upcoming';
 import Filter from './components/pages/Filter';
 import Completed from './components/pages/Completed';
+import Projects from './components/pages/Projects';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           <Route path='upcoming' element={<Upcoming />} />
           <Route path='filter' element={<Filter />} />
           <Route path='completed' element={<Completed />} />
+          <Route path='/projects' element={<Projects />} />
+          <Route path='/projects/:projectId' element={<Projects />} />
         </Route>
       </Routes>
     </BrowserRouter>

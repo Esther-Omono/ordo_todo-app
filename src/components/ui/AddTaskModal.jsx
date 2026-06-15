@@ -69,11 +69,14 @@ export default function AddTaskModal({
   onClose,
   onSubmit,
   taskToEdit = null,
+  projects = [],
+  onAddProject,
 }) {
   const isEditing = taskToEdit !== null;
   const [form, setForm] = useState(() => getInitialState(taskToEdit));
-
   const [titleError, setTitleError] = useState(false);
+  const [isAddingProject, setIsAddingProject] = useState(false);
+  const [newProjectInput, setNewProjectInput] = useState('');
 
   // Reset form when taskToEdit identity changes (new task vs edit)
   const prevTaskId = useRef(taskToEdit?.id ?? null);
@@ -131,6 +134,28 @@ export default function AddTaskModal({
     if (e.key === 'Enter') {
       e.preventDefault();
       if (form.tagInput.trim()) addTag(form.tagInput.trim());
+    }
+  };
+
+  const handleAddNewProject = () => {
+    const name = newProjectInput.trim();
+    if (name && onAddProject) {
+      onAddProject(name);
+      const id = name.toLowerCase().replace(/\s+/g, '-');
+      set('project')(id);
+    }
+    setNewProjectInput('');
+    setIsAddingProject(false);
+  };
+
+  const handleNewProjectKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddNewProject();
+    }
+    if (e.key === 'Escape') {
+      setIsAddingProject(false);
+      setNewProjectInput('');
     }
   };
 
@@ -209,17 +234,58 @@ export default function AddTaskModal({
             </FormField>
 
             <FormField label='Project' htmlFor='project'>
-              <select
-                id='project'
-                value={form.project}
-                onChange={(e) => set('project')(e.target.value)}
-                className={`${inputClass} cursor-pointer`}
-              >
-                <option value=''>Select a project</option>
-                <option value='work'>Work</option>
-                <option value='personal'>Personal</option>
-                <option value='shopping'>Shopping</option>
-              </select>
+              {isAddingProject ? (
+                <div className='flex gap-1.5'>
+                  <input
+                    autoFocus
+                    type='text'
+                    value={newProjectInput}
+                    onChange={(e) => setNewProjectInput(e.target.value)}
+                    onKeyDown={handleNewProjectKeyDown}
+                    placeholder='New project name...'
+                    className={`${inputClass} flex-1`}
+                  />
+                  <button
+                    onClick={handleAddNewProject}
+                    className='py-2 px-2.5 rounded-md border border-border bg-bg-primary text-accent text-xs cursor-pointer font-medium shrink-0 flex items-center gap-1 hover:bg-accent transition-colors hover:text-bg-primary'
+                  >
+                    <Plus className='w-3.5 h-3.5' />
+                    Add
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsAddingProject(false);
+                      setNewProjectInput('');
+                    }}
+                    className='py-2 px-2 rounded-md border border-border bg-bg-primary text-text-secondary text-xs cursor-pointer hover:text-urgent transition-colors'
+                  >
+                    <X className='w-3.5 h-3.5' />
+                  </button>
+                </div>
+              ) : (
+                <div className='flex gap-1.5'>
+                  <select
+                    id='project'
+                    value={form.project}
+                    onChange={(e) => set('project')(e.target.value)}
+                    className={`${inputClass} cursor-pointer flex-1`}
+                  >
+                    <option value=''>Select a project</option>
+                    {projects.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => setIsAddingProject(true)}
+                    title='Add new project'
+                    className='py-2 px-2.5 rounded-md border border-border bg-bg-primary text-accent text-xs cursor-pointer flex items-center hover:bg-accent hover:text-bg-primary transition-colors shrink-0'
+                  >
+                    <Plus className='w-3.5 h-3.5' />
+                  </button>
+                </div>
+              )}
             </FormField>
           </div>
 
@@ -337,7 +403,7 @@ export default function AddTaskModal({
               {form.title || 'Task Title'}
             </p>
             <div className='flex gap-2 mt-1 text-[10px] flex-wrap'>
-              <span>{form.prioritypriority ?? 'priority'}</span>
+              <span>{form.priority ?? 'priority'}</span>
               <span className='text-text-secondary'>
                 {form.dueDate || 'date'}
               </span>

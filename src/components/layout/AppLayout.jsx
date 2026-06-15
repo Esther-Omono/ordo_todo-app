@@ -7,13 +7,53 @@ import AddTaskModal from '../ui/AddTaskModal';
 import TaskCardModal from '../ui/TaskCardModal';
 import { useTasks } from '../hooks/useTasks';
 
+const DEFAULT_PROJECTS = [
+  { id: 'personal', name: 'Personal' },
+  { id: 'work', name: 'Work' },
+  { id: 'appointments', name: 'Appointments' },
+];
+
+const PROJECTS_STORAGE_KEY = 'projects';
+
+const loadProjects = () => {
+  try {
+    const stored = localStorage.getItem(PROJECTS_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : DEFAULT_PROJECTS;
+  } catch {
+    return DEFAULT_PROJECTS;
+  }
+};
+
+const saveProjects = (projects) => {
+  try {
+    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+  } catch {
+    // Handle storage errors if needed
+  }
+};
+
 const AppLayout = () => {
   const { tasks, addTask, updateTask, deleteTask } = useTasks();
+  const [projects, setProjects] = useState(loadProjects());
 
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const [isTaskCardModalOpen, setIsTaskCardModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskToEdit, setTaskToEdit] = useState(null);
+
+  const handleAddProject = (name) => {
+    const id = name.toLowerCase().replace(/\s+/g, '-');
+    // Avoid duplicates
+    if (
+      projects.some(
+        (p) => p.id === id || p.name.toLowerCase() === name.toLowerCase(),
+      )
+    )
+      return;
+    const updated = [...projects, { id, name }];
+    setProjects(updated);
+    saveProjects(updated);
+  };
 
   const openAddModal = () => {
     setTaskToEdit(null);
@@ -74,7 +114,11 @@ const AppLayout = () => {
       <Header />
 
       <div className='flex flex-1 overflow-hidden'>
-        <Sidebar onAddTaskClick={openAddModal} />
+        <Sidebar
+          onAddTaskClick={openAddModal}
+          projects={projects}
+          onAddProject={handleAddProject}
+        />
         <Main
           tasks={tasks}
           onAddTaskClick={openAddModal}
@@ -90,6 +134,8 @@ const AppLayout = () => {
         onClose={handleCloseAddModal}
         onSubmit={handleSubmitTask}
         taskToEdit={taskToEdit}
+        projects={projects}
+        onAddProject={handleAddProject}
       />
 
       <TaskCardModal

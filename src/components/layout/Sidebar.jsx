@@ -2,17 +2,14 @@ import {
   Calendar1,
   CalendarArrowUp,
   CalendarCheck2,
-  ChartNoAxesGantt,
-  FolderKanban,
   Inbox,
   Plus,
-  PlusCircle,
   SlidersHorizontal,
 } from 'lucide-react';
-import Dropdown from '../ui/Dropdown';
 import { Link } from 'react-router-dom';
+import ProjectsList from '../features/ProjectsList';
 
-const Sidebar = ({ onAddTaskClick }) => {
+const Sidebar = ({ onAddTaskClick, projects, onAddProject }) => {
   return (
     <div className='font-sans px-5 pt-5 w-1/5 flex flex-col gap-2 border-r border-r-text-muted overflow-y-auto'>
       <button
@@ -69,25 +66,9 @@ const Sidebar = ({ onAddTaskClick }) => {
 
       <hr className='my-2 border-t border-text-muted w-full mx-auto' />
 
-      <div>
-        <p className='pl-3 pb-2 text-text-muted font-bold'>PROJECTS</p>
-        <div>
-          <div className='flex gap-2 rounded-md px-3 py-2 cursor-pointer text-text-secondary hover:bg-active hover:text-accent'>
-            <FolderKanban size={20} />
-            <p>Personal</p>
-          </div>
-
-          <div className='flex gap-2 rounded-md px-3 py-2 cursor-pointer text-text-secondary hover:bg-active hover:text-accent'>
-            <FolderKanban size={20} className='text-text-secondary' />
-            <p>Work</p>
-          </div>
-
-          <div className='flex gap-2 rounded-md px-3 py-2 cursor-pointer text-text-secondary hover:bg-active hover:text-accent'>
-            <FolderKanban size={20} className='text-text-secondary' />
-            <p>Appointments</p>
-          </div>
-        </div>
-      </div>
+      <Link to='/projects'>
+        <ProjectsList projects={projects} onAddProject={onAddProject} />
+      </Link>
     </div>
   );
 };
